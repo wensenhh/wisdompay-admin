@@ -5,8 +5,7 @@ const success = (result) => {
     msg: result.msg || ''
   }
 }
-const failed = (error) => {
-  console.log(error)
+const failed = (error) => {  
   return {
     code: 500,
     msg: '服务器异常'

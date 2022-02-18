@@ -1,12 +1,6 @@
 const pool = require('../../lib/mysql')
 const { query } = pool
 
-const login = (val) => {
-  const { user_name, password } = val;
-  const _sql = 'select * from users where user_name = ? and password = ?';
-  return query(_sql, [user_name, password]);
-}
-
 const getInfo = (val) => {
   const { user_name } = val;
   const _sql = 'select * from users where user_name = ?';
@@ -14,9 +8,9 @@ const getInfo = (val) => {
 }
 
 const register = (val) => {
-  const { user_name, password, name } = val;
-  const _sql = 'update users set password = ?, name = ? where user_name = ?';
-  return query(_sql, [password, name, user_name]);
+  const { user_name, password } = val;
+  const _sql = 'update users set password = ? where user_name = ?';
+  return query(_sql, [password, user_name]);
 }
 
 const upVerify = (val) => {
@@ -27,14 +21,20 @@ const upVerify = (val) => {
 
 const insertVerify = (val) => {
   const { user_name, verification } = val;
-  const _sql = 'insert into users (user_name, verification) values (?, ?)';
+  const _sql = 'insert into users(user_name, verification) values (?, ?)';
   return query(_sql, [user_name, verification]);
 }
 
-module.exports = {  
-  login,
+const upPassworld = (val) => {
+  const { user_name, password } = val;
+  const _sql = 'update users set password = ? where user_name = ?';
+  return query(_sql, [password, user_name]);
+}
+
+module.exports = {
   getInfo,
   register,
   upVerify,
-  insertVerify
+  insertVerify,
+  upPassworld
 }

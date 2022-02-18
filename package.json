@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/frank994/Loterry-node#readme",
   "dependencies": {
+    "co-body": "^5.1.1",
+    "formidable": "^1.1.1",
     "koa": "^2.5.1",
-    "koa-bodyparser": "^4.2.1",
+    "koa-body": "^4.2.0",
     "koa-mysql-session": "^0.0.2",
     "koa-router": "^7.4.0",
     "koa-session-minimal": "^3.0.4",
