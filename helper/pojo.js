@@ -6,6 +6,7 @@ const success = (result) => {
   }
 }
 const failed = (error) => {  
+  console.log(error);
   return {
     code: 500,
     msg: '服务器异常'

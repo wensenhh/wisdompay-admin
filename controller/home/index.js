@@ -8,10 +8,16 @@ const getSlideshowList = (val) => {
     return query(_sql, ['%' + name + '%']);
 }
 
+const getById = (val) => {  
+  const { id } = val;
+  const _sql = 'select * from slideshow where id = ?';
+  return query(_sql, [id]);
+}
+
 const upSlideshow = (val) => {
   const { id, title, link, img } = val;
-  const _sql = 'update users set title = ?, link = ?, msg = ? where id = ?';
-  return query(_sql, [id, title, link, img]);
+  const _sql = 'update slideshow set title = ?, link = ?, msg = ? where id = ?';
+  return query(_sql, [title, link, img, id]);
 }
 
 const insertSlideshow = (val) => {
@@ -22,13 +28,14 @@ const insertSlideshow = (val) => {
 
 const delSlideshow = (val) => {
   const { id } = val;
-  const _sql = 'update users set password = ? where user_name = ?';
-  return query(_sql, [password, user_name]);
+  const _sql = 'delete from slideshow where id = ?';
+  return query(_sql, [id]);
 }
 
 module.exports = {
     getSlideshowList,
     insertSlideshow,
     upSlideshow,
-    delSlideshow
+    delSlideshow,
+    getById
 }

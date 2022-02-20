@@ -9,11 +9,12 @@ const checkAdmin = require('../helper/check');
 router.post('/api', (ctx, next) => {
   if(ctx.request.path != '/api/admin'){
     checkAdmin(ctx, next);
-  }
+  } else next();
 })
 
 routes.forEach(item => {
   const service = require(`../services/${item.service}`)  
   router[item.method](item.path, service[item.action])
 })
+
 module.exports = router

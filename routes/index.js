@@ -13,4 +13,6 @@ module.exports = (config => {
 })([
   'admin',
   'home',
+  'game',
+  'notice'
 ])
