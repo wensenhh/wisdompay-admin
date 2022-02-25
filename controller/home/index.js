@@ -4,7 +4,8 @@ var uuid = require('node-uuid');
 
 const getSlideshowList = (val) => {  
     const { name } = val;
-    const _sql = 'select * from slideshow where title like ?';
+    let _sql = 'select * from slideshow';
+    if(name) _sql += ' where title like ?';
     return query(_sql, ['%' + name + '%']);
 }
 
@@ -16,7 +17,7 @@ const getById = (val) => {
 
 const upSlideshow = (val) => {
   const { id, title, link, img } = val;
-  const _sql = 'update slideshow set title = ?, link = ?, msg = ? where id = ?';
+  const _sql = 'update slideshow set title = ?, link = ?, img = ? where id = ?';
   return query(_sql, [title, link, img, id]);
 }
 

@@ -22,7 +22,8 @@ const upload = async ctx => {
     let res;
     try {
         let path = ctx.request.files.file.path;
-        let a = _.split(path, '\\');
+        if(!path) return success(canerr);
+        let a = _.split(path, '/');
         let data = '/' + a[a.length - 2] + '/' + a.pop();
         res = success({ code: 200, data });
     } catch (err) {

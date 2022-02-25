@@ -1,6 +1,7 @@
 const pool = require('../../lib/mysql')
 const { query } = pool
 var uuid = require('node-uuid');
+const { format } = require('../../helper/format');
 
 
 const getGameList = () => {
@@ -75,13 +76,13 @@ const getBillTypeList = (val) => {
 const insertBillType = (val) => {
     const { id, status, game_type } = val;
     const _sql = 'insert into bill_type(id, status, game_type, time) values (?, ?, ?, ?)';
-    return query(_sql, [id, status, game_type, new Date().toLocaleDateString()]);
+    return query(_sql, [id, status || 0, game_type, new Date()]);
 }
 
 const upBillType = (val) => {
     const { id, status, game_type } = val;
     const _sql = 'update bill_type set status = ?, game_type = ? where id = ?';
-    return query(_sql, [id, status, game_type]);
+    return query(_sql, [status, game_type, id]);
 }
 
 const delBillType = (val) => {
@@ -106,7 +107,7 @@ const getBillList = (val) => {
 const insertBillInfo = (val) => {
     const { old_bill, bill, title, txt } = val;
     const _sql = 'insert into bill_info(id, old_bill, bill, title, txt, time) values (?, ?, ?, ?, ?, ?)';
-    return query(_sql, [uuid.v1(), old_bill, bill, title, txt, new Date().toLocaleDateString()]);
+    return query(_sql, [uuid.v1(), old_bill, bill, title, txt, format('yyyy/MM/dd')]);
 }
 
 const upBillInfo = (val) => {
@@ -129,33 +130,27 @@ const getBillById = (val) => {
 
 const getVipTypeList = (val) => {
     const { type } = val;
-    let _sql = 'select * from vip_type';
+    let _sql = 'select * from users';
     if (type) _sql += ' where type = ?'
     return query(_sql, [type]);
 }
 
 const insertVipInfo = (val) => {
-    const { account, name, type } = val;
-    const _sql = 'insert into vip_type(account, name, type, time) values (?, ?, ?, ?)';
-    return query(_sql, [account, name, type, new Date().toLocaleDateString()]);
+    const { user_name, name, type } = val;
+    const _sql = 'insert into users(user_name, name, type, time) values (?, ?, ?, ?)';
+    return query(_sql, [user_name, name, type, new Date()]);
 }
 
 const upVipType = (val) => {
-    const { account, name, type } = val;
-    const _sql = 'update vip_type set name = ?, type = ? where account = ?';
-    return query(_sql, [name, type, account]);
-}
-
-const delVipType = (val) => {
-    const { account } = val;
-    const _sql = 'delete from vip_type where account = ?';
-    return query(_sql, [account]);
+    const { user_name, type } = val;
+    const _sql = 'update users set type = ?, time = ? where user_name = ?';
+    return query(_sql, [type || 0, new Date(), user_name]);
 }
 
 const getVipById = (val) => {
-    const { account } = val;
-    const _sql = 'select * from vip_type where account = ?';
-    return query(_sql, [account]);
+    const { user_name } = val;
+    const _sql = 'select * from users where user_name = ?';
+    return query(_sql, [user_name]);
 }
 module.exports = {
     getGameList,
@@ -180,7 +175,6 @@ module.exports = {
     getBillById,
     getVipTypeList,
     insertVipInfo,
-    upVipType,
-    delVipType,
+    upVipType,    
     getVipById
 }

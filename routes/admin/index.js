@@ -5,5 +5,6 @@ module.exports = {
   'updatePassword': { method: methods.post },
   'register': { method: methods.post },
   'getUserInfo': { method: methods.post },
-  'singout': { method: methods.get },
+  'getPlayerList': { method: methods.post },
+  'upUserInfo': { method: methods.post },
 }

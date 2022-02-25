@@ -14,5 +14,7 @@ module.exports = (config => {
   'admin',
   'home',
   'game',
-  'notice'
+  'notice',
+  'user',
+  'suggest'
 ])

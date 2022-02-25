@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/frank994/Loterry-node#readme",
   "dependencies": {
+    "@alicloud/pop-core": "^1.7.10",
     "co-body": "^5.1.1",
     "formidable": "^1.1.1",
     "koa": "^2.5.1",

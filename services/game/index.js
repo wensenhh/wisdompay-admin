@@ -1,6 +1,7 @@
 const controller = require('../../controller/game')
 var _ = require('lodash');
 const { success, failed } = require('../../helper/pojo')
+const { format } = require('../../helper/format');
 const canerr = { code: 201, msg: '参数错误' };
 const shiban = { code: 201, msg: '服务器异常' };
 
@@ -20,7 +21,7 @@ const getGameList = async ctx => {
 const getGameTypeList = async ctx => {
     let res;
     try {
-        let val = ctx.request.query;
+        let val = ctx.request.body;
         let list = await controller.getGameTypeList(val);
         if (list.code != 200) return res = success(shiban);
         res = success({ code: 200, data: { list: list.data } });
@@ -146,11 +147,13 @@ const delGameType = async ctx => {
 const getBillTypeList = async ctx => {
     let res;
     try {
-        const val = ctx.request.query;
+        const val = ctx.request.body;
         let { start_time, game_type } = val;        
         if(!game_type) return success(canerr);
-        if(!start_time) start_time = new Date().toLocaleDateString();
-        val.start_time = start_time;
+        if(!start_time) {
+            start_time = format('yyyy/MM/dd');
+            val.start_time = start_time;
+        }
         let list = await controller.getBillTypeList(val);
         if (list.code != 200) return res = success(shiban);
         res = success({ code: 200, data: { list: list.data } });        
@@ -161,13 +164,31 @@ const getBillTypeList = async ctx => {
     }
 }
 
+const getBillInfo = async ctx => {
+    let res;
+    try {
+        const val = ctx.request.body;       
+        const { id } = val;
+        if(!id) return success(canerr);
+        let list = await controller.getBillById(val);
+        if (list.code != 200) return res = success(shiban);
+        res = success({ code: 200, data: { list: list.data } });
+    } catch (err) {
+        res = failed(err);
+    } finally {
+        ctx.body = res;
+    }
+}
+
 const insertBillType = async ctx => {
     let res;
     try {
         const val = ctx.request.body;
-        const { id, status, game_type } = val;
-        if (!id || !status || !game_type) return success(canerr);       
-        await controller.insertBillType(val);
+        let { id, status, game_type } = val;
+        if(status) status = _.join(status, ';');
+        else status = '';
+        if (!id || !game_type) return success(canerr);
+        await controller.insertBillType({ id, status, game_type });
         res = success({ code: 200, msg: '添加成功' });
     } catch (err) {
         res = failed(err);
@@ -180,12 +201,14 @@ const upBillType = async ctx => {
     let res;
     try {
         const val = ctx.request.body;
-        const { id, status, game_type } = val;
-        if (!id || !status || !game_type) return success(canerr);
+        let { id, status, game_type } = val;
+        if(status) status = _.join(status, ';');
+        else status = '';
+        if (!id || !game_type) return success(canerr);
         let list = await controller.getBillTypeById(val);
         if (list.code != 200) return res = success(shiban);
         if (list.data.length == 0) return res = success({ code: 201, msg: '数据不存在' });
-        await controller.upBillType(val);
+        await controller.upBillType({ id, status, game_type });
         res = success({ code: 200, msg: '修改成功' });
     } catch (err) {
         res = failed(err);
@@ -215,7 +238,7 @@ const delBillType = async ctx => {
 const getBillList = async ctx => {
     let res;
     try {
-        const val = ctx.request.query;
+        const val = ctx.request.body;
         let { old_bill } = val;
         if(!old_bill) return success(canerr);        
         let list = await controller.getBillList(val);
@@ -282,7 +305,7 @@ const delBillInfo = async ctx => {
 const getVipTypeList = async ctx =>{
     let res;
     try {
-        const val = ctx.request.query;                 
+        const val = ctx.request.body;                 
         let list = await controller.getVipTypeList(val);
         if (list.code != 200) return res = success(shiban);
         res = success({ code: 200, data: { list: list.data } });        
@@ -297,8 +320,8 @@ const insertVipInfo = async ctx => {
     let res;
     try {
         const val = ctx.request.body;
-        const { account, name, type } = val;
-        if (!account || !name || !type) return success(canerr);       
+        const { user_name, name, type } = val;
+        if (!user_name || !name || !type) return success(canerr);       
         await controller.insertVipInfo(val);
         res = success({ code: 200, msg: '添加成功' });
     } catch (err) {
@@ -312,8 +335,8 @@ const upVipType = async ctx => {
     let res;
     try {
         const val = ctx.request.body;
-        const { account, name, type } = val;
-        if (!account || !name || !type) return success(canerr);    
+        const { user_name } = val;
+        if (!user_name) return success(canerr);
         let list = await controller.getVipById(val);
         if (list.code != 200) return res = success(shiban);
         if (list.data.length == 0) return res = success({ code: 201, msg: '数据不存在' });
@@ -326,23 +349,6 @@ const upVipType = async ctx => {
     }
 }
 
-const delVipType = async ctx => {
-    let res;
-    try {
-        const val = ctx.request.body;
-        const { account } = val;
-        if (!account) return success(canerr);
-        let list = await controller.getVipById(val);
-        if (list.code != 200) return res = success(shiban);
-        if (list.data.length == 0) return res = success({ code: 201, msg: '数据不存在' });
-        await controller.delVipType(val);
-        res = success({ code: 200, msg: '删除成功' });
-    } catch (err) {
-        res = failed(err);
-    } finally {
-        ctx.body = res;
-    }
-}
 module.exports = {
     getGameList,
     getGameTypeList,
@@ -363,5 +369,5 @@ module.exports = {
     getVipTypeList,
     insertVipInfo,
     upVipType,
-    delVipType    
+    getBillInfo  
 }

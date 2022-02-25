@@ -5,7 +5,8 @@ const { success, failed } = require('./pojo');
 const checkAdmin = (ctx, next) =>{
 	let res;	
 	const user_id = ctx.session.user_id;
-	if (!user_id) {
+	const user_name = ctx.session.user_name;
+	if (!user_id || user_name) {
 		res = success({
 			code: 403,
 			type: 'ERROR_SESSION',
